@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书内容助手 - 引流神器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff2442;
+            --primary-light: #ff6b7a;
+            --bg: #fff5f5;
+            --dark: #1a1a1a;
+            --text: #333;
+            --text-muted: #666;
+            --border: #eee;
+            --success: #52c41a;
+            --gradient: linear-gradient(135deg, #ff2442 0%, #ff6b7a 100%);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 36, 66, 0.3);
+        }
+        
+        header h1 { font-size: 28px; margin-bottom: 8px; }
+        header p { opacity: 0.9; font-size: 14px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card h2 span { font-size: 20px; }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        
+        .category-btn {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .category-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .input-group { margin-bottom: 16px; }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 36, 66, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .output {
+            background: #fff9f9;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .output.show { display: block; }
+        
+        .output h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .output-content {
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .copy-btn {
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .tips {
+            background: #fffbfb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        
+        .tips h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        .tips ul {
+            padding-left: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #fff5f5, #fff);
+            border: 2px solid #ffcdd2;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-box .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-box .label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .hashtag {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📕 小红书内容助手</h1>
+        <p>AI 帮你写爆款笔记，引流变现</p>
+    </header>
+    
+    <main>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="value">10万+</div>
+                <div class="label">平均曝光</div>
+            </div>
+            <div class="stat-box">
+                <div class="value">5000+</div>
+                <div class="label">平均点赞</div>
+            </div>
+            <div class="stat-box">
+                <div class="value">300+</div>
+                <div class="label">平均收藏</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><span>📂</span> 选择内容分类</h2>
+            <div class="category-grid">
+                <div class="category-btn active" data-category="ai">🤖 AI工具</div>
+                <div class="category-btn" data-category="study">📚 学习</div>
+                <div class="category-btn" data-category="life">🏠 生活</div>
+                <div class="category-btn" data-category="beauty">💄 美妆</div>
+                <div class="category-btn" data-category="food">🍜 美食</div>
+                <div class="category-btn" data-category="tech">💻 数码</div>
+                <div class="category-btn" data-category="money">💰 搞钱</div>
+                <div class="category-btn" data-category="baby">👶 育儿</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><span>✍️</span> 生成笔记</h2>
+            
+            <div class="input-group">
+                <label>话题关键词</label>
+                <input type="text" id="topic" placeholder="例如：AI工具、效率提升、兼职赚钱">
+            </div>
+            
+            <div class="input-group">
+                <label>内容风格</label>
+                <select id="style">
+                    <option value="干货">干货教程型</option>
+                    <option value="情感">情感共鸣型</option>
+                    <option value="搞笑">轻松搞笑型</option>
+                    <option value="种草">好物种草型</option>
+                    <option value="故事">故事分享型</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>目标人群</label>
+                <select id="audience">
+                    <option value="学生">大学生/学生党</option>
+                    <option value="职场">职场新人</option>
+                    <option value="妈妈">全职妈妈</option>
+                    <option value="创业者">创业者/副业</option>
+                    <option value="所有">所有用户</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>笔记长度</label>
+                <select id="length">
+                    <option value="short">短篇（300字以内）</option>
+                    <option value="medium" selected>中篇（500-800字）</option>
+                    <option value="long">长篇（1000字以上）</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" onclick="generatePost()">
+                🚀 生成爆款笔记
+            </button>
+            
+            <div class="output" id="output">
+                <h3>📝 生成的笔记</h3>
+                <div class="output-content" id="outputContent"></div>
+                <div class="hashtags" id="hashtags"></div>
+                <button class="copy-btn" onclick="copyContent()">📋 一键复制</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><span>📋</span> 标题库</h2>
+            <div class="input-group">
+                <label>点击下面的标题可复制</label>
+            </div>
+            <div id="titleList"></div>
+        </div>
+        
+        <div class="tips">
+            <h4>💡 发布建议</h4>
+            <ul>
+                <li>发布时间：早上7-9点，中午12-13点，晚上20-22点</li>
+                <li>前20字最重要，要能抓住眼球</li>
+                <li>配图要精美，尽量用3:4竖图</li>
+                <li>互动：评论区积极回复，增加曝光</li>
+                <li>话题：带5-10个相关话题标签</li>
+            </ul>
+        </div>
+    </main>
+    
+    <script>
+        const categories = {
+            ai: {
+                names: ['AI工具', 'ChatGPT', 'AI副业', 'AI写作'],
+                templates: [
+                    '姐妹们！这个AI工具让我月入3万+，真心分享',
+                    '用AI做副业真的太香了！在家就能做',
+                    '不会吧还有人不知道这些AI神器？',
+                    '从0开始学AI，我后悔没早点知道'
+                ],
+                hashtags: ['#AI工具', '#ChatGPT', '#AI副业', '#效率神器', '#搞钱']
+            },
+            study: {
+                names: ['学习方法', '自律', '考证', '考研'],
+                templates: [
+                    '学生党必看！从倒数逆袭到前三的学习方法',
+                    '自律上瘾！我是怎么做到每天学习8小时的',
+                    '考证真的有用！毕业后才发现差距这么大',
+                    '考研plog｜每天10小时备考是什么体验'
+                ],
+                hashtags: ['#学习方法', '#自律', '#考证', '#考研', '#学生党']
+            },
+            money: {
+                names: ['副业', '赚钱', '兼职', '创业'],
+                templates: [
+                    '月入2万的副业分享｜适合上班族的搞钱思路',
+                    '辞职做自媒体半年，我后悔了吗？',
+                    '搞钱必看！这些副业真的能赚钱',
+                    '从0开始做副业，我的收入终于破万了'
+                ],
+                hashtags: ['#副业', '#赚钱', '#搞钱', '#自媒体', '#创业']
+            }
+        };
+        
+        const titleTemplates = {
+            ai: [
+                '姐妹们！这个AI工具让我收入翻倍',
+                '不会吧还有人不知道ChatGPT？',
+                '用AI做副业真的太香了',
+                'AI时代必学的5个技能',
+                '这个AI神器后悔没早点发现'
+            ],
+            study: [
+                '从学渣到学霸的逆袭之路',
+                '自律上瘾的秘密武器',
+                '高效学习方法分享',
+                '学生党必看的学习app',
+                '这样备考效率翻倍'
+            ],
+            money: [
+                '月入5万的副业分享',
+                '适合上班族的搞钱思路',
+                '我的副业收入终于破万了',
+                '辞职后我后悔了吗？',
+                '搞钱必看的5个方向'
+            ],
+            life: [
+                '租房改造小技巧',
+                '低成本生活质量提升',
+                '极简生活一个月变化',
+                '居家收纳神器分享',
+                '一个人也要好好吃饭'
+            ]
+        };
+        
+        let selectedCategory = 'ai';
+        
+        // Category buttons
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedCategory = btn.dataset.category;
+                renderTitles();
+            });
+        });
+        
+        function renderTitles() {
+            const titles = titleTemplates[selectedCategory] || titleTemplates.ai;
+            const list = document.getElementById('titleList');
+            list.innerHTML = titles.map((title, i) => `
+                <div class="input-group" style="cursor:pointer" onclick="copyText('${title}')">
+                    <div style="padding:12px;background:#fff5f5;border-radius:8px;border-left:3px solid #ff2442;">
+                        ${i + 1}. ${title}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function generatePost() {
+            const topic = document.getElementById('topic').value || selectedCategory;
+            const style = document.getElementById('style').value;
+            const audience = document.getElementById('audience').value;
+            const length = document.getElementById('length').value;
+            
+            const categoryData = categories[selectedCategory] || categories.ai;
+            
+            const titles = categoryData.templates;
+            const selectedTitle = titles[Math.floor(Math.random() * titles.length)];
+            
+            const contents = {
+                short: `【${selectedTitle}】
+
+${topic}真的太香了！姐妹们一定要试试👇
+
+作为一个${audience}，我以前也觉得${topic}很难，直到后来...
+
+👉 核心方法：
+1. 先收藏再说
+2. 评论区见
+3. 关注不迷路
+
+真的很有用！觉得有帮助的姐妹点个赞👍
+
+#${selectedCategory} #${topic} #干货分享`,
+                
+                medium: `【${selectedTitle}】
+
+姐妹们！今天必须给你们分享${topic}，真的改变了我！
+
+👉 背景
+作为一个${audience}，我以前对${topic}一窍不通，直到...
+
+👉 干货分享
+1. 第一步很关键...
+2. 坚持一个月，效果惊艳...
+3. 心态最重要...
+
+👉 我的变化
+坚持了3个月，真的没想到效果这么好！
+
+💡 小提示：
+- 坚持最重要
+- 方法要找对
+
+觉得有帮助的姐妹们：
+👍 点赞
+💬 评论区聊聊
+📢 转发分享
+❤️ 关注我，持续分享更多干货！
+
+#${selectedCategory} #${topic} #${audience} #成长 #干货`,
+                
+                long: `【${selectedTitle}】
+
+姐妹们！今天必须好好聊聊${topic}这个话题！
+
+作为${audience}，我曾经也对${topic}很迷茫，但后来找到了方法，今天分享给你们！
+
+---
+
+📖 什么是${topic}？
+
+简单来说，${topic}就是...
+
+---
+
+💪 我是怎么开始的
+
+刚开始我也什么都不懂，就是每天坚持...
+
+第一个月：适应期，很痛苦但要咬牙坚持
+第二个月：找到感觉了，开始有起色
+第三个月：质的飞跃，效果惊艳！
+
+---
+
+🔥 核心干货
+
+1️⃣ 【心态篇】
+- 不要急于求成
+- 接受不完美
+- 给自己时间
+
+2️⃣ 【方法篇】
+- 找对方向很重要
+- 每天进步一点点
+- 社群互相监督
+
+3️⃣ 【工具篇】
+- 这些工具帮我大忙
+- 效率翻倍
+
+---
+
+📈 我的变化
+
+✅ 收入翻倍
+✅ 时间安排更合理
+✅ 自信心提升
+✅ 认识了很多志同道合的朋友
+
+---
+
+💬 写在最后
+
+姐妹们，${topic}真的不是难事儿，关键是要开始！
+
+有什么问题评论区问我，看到都会回～
+
+如果觉得有帮助：
+👍 点赞收藏
+💬 评论区聊聊
+📢 转发给需要的姐妹
+❤️ 关注我不迷路
+
+#${selectedCategory} #${topic} #${audience} #成长 #干货分享 #女性力量`
+            };
+            
+            const content = contents[length];
+            
+            const hashtags = categoryData.hashtags.join(' ');
+            
+            document.getElementById('outputContent').textContent = content;
+            document.getElementById('hashtags').innerHTML = categoryData.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('');
+            document.getElementById('output').classList.add('show');
+        }
+        
+        function copyContent() {
+            const content = document.getElementById('outputContent').textContent;
+            const hashtags = document.getElementById('hashtags').textContent;
+            navigator.clipboard.writeText(content + '\n\n' + hashtags);
+            alert('已复制到剪贴板！');
+        }
+        
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert('标题已复制！');
+        }
+        
+        renderTitles();
+    </script>
+</body>
+</html>
